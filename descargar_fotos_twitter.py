@@ -4,6 +4,14 @@ from bs4 import BeautifulSoup
 import sys
 import json
 
+def getExtension(filename):
+    if ".png" in filename:
+        return ".png"
+    if ".jpg" in filename:
+        return ".jpg"
+    
+    return "unknown"
+
 searches = sys.argv[2:]
 pages = sys.argv[1]
 
@@ -43,11 +51,12 @@ for search in searches:
                     print "Usuario: " + name + " multifoto"
                     for image in multi_photos.find_all('img'):
                         if image['src'] + ':large' not in urls:
-                            file = open(str(i) +".jpg", "w")
+                            ext = getExtension(image['src'])
+                            file = open(str(i) + ext, "w")
                             file.write(urlopen(image['src'] + ':large').read())
                             urls.append(image['src'] + ':large')
                             file.close()
-                            print "Descargando imagen " + str(i) + ".jpg"
+                            print "Descargando imagen " + str(i) + ext
                             i+=1
                         else:
                             print "Imagen " + image['src'] + ':large' + " repetida"
@@ -58,11 +67,12 @@ for search in searches:
                         for a in images:
                             image = a['data-image-url']
                             if image + ':large' not in urls:
-                                file = open(str(i) +".jpg", "w")
+                                ext = getExtension(image)
+                                file = open(str(i) + ext, "w")
                                 file.write(urlopen(image + ":large").read())
-                                urls.append(image)
+                                urls.append(image + ":large")
                                 file.close()
-                                print "Descargando imagen " + str(i) + ".jpg"
+                                print "Descargando imagen " + str(i) + ext
                                 i+=1
                             else:
                                 print "Imagen " + image + " repetida"
